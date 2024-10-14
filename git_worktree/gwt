@@ -1,0 +1,132 @@
+#!/bin/bash
+
+source ../logger.sh
+
+function branch_exists_on_remote() {
+    git ls-remote --exit-code --heads origin "$BRANCH_NAME" &> /dev/null
+}
+
+set +x # Enable debugging
+
+if [ ! -e .git ]; then
+    error "'gwt' must be run from a root git repository (.git)."
+    exit 1
+fi
+
+if [[ -z $1 ]]; then
+    error "Command parameter must be set"
+    exit 1
+fi
+
+CMD=$1
+
+if [ "$CMD" != "help" ] && [ -z "$2" ]; then
+    error "Branch parameter must be set"
+    exit 1
+fi
+
+info "Current user: $(whoami)"
+
+WORKTREE_DIR=~/worktree
+
+if [[ $CMD == add ]]; then
+    mkdir -p $WORKTREE_DIR
+    info "Worktree root dir: $WORKTREE_DIR"
+    BRANCH_NAME=$2
+    info "Creating branch dir: $WORKTREE_DIR/$BRANCH_NAME"
+    if ! mkdir -p "$WORKTREE_DIR"/"$BRANCH_NAME"; then
+        error "Failed to create branch dir: $WORKTREE_DIR/$BRANCH_NAME"
+        exit 1
+    fi
+    info "Branch dir: $WORKTREE_DIR/$BRANCH_NAME created"
+
+    if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1; then
+        info "Branch: $BRANCH_NAME already exists. Assigning a worktree for it."
+        if ! git worktree add "$WORKTREE_DIR"/"$BRANCH_NAME" "$BRANCH_NAME"; then
+            error "Failed to assign worktree."
+            exit 1
+        fi
+        info "Worktree branch: $WORKTREE_DIR/$BRANCH_NAME assigned"
+    else
+        info "Creating worktree branch: $BRANCH_NAME"
+        if ! git worktree add -b "$BRANCH_NAME" "$WORKTREE_DIR"/"$BRANCH_NAME"; then
+            error "Failed to create worktree branch."
+            exit 1
+        fi
+        cd "$WORKTREE_DIR/$BRANCH_NAME" || {
+            error "Failed to change directory to $WORKTREE_DIR/$BRANCH_NAME"
+            exit 1
+        }
+        info "Worktree branch: $BRANCH_NAME created"
+    fi
+
+    cd "$WORKTREE_DIR/$BRANCH_NAME" || {
+        error "Failed to change directory to $WORKTREE_DIR/$BRANCH_NAME"
+        exit 1
+    }
+
+    if ! branch_exists_on_remote; then
+        info "Pushing worktree branch to upstream"
+        if ! git push --set-upstream origin "$BRANCH_NAME"; then
+            error "Failed to push worktree branch to upstream."
+            exit 1
+        fi
+    else
+        info "Branch already exists on remote"
+    fi
+
+    info "Calling jfdev init"
+    if ! jfdev init; then
+        exit 1
+    fi
+
+    info "Worktree branch env ready. Please run: 'cd $WORKTREE_DIR/$BRANCH_NAME'. Happy developing!"
+elif [[ $CMD == remove ]]; then
+    info "Worktree root dir: $WORKTREE_DIR"
+    BRANCH_NAME=$2
+    info "Removing git worktree: $WORKTREE_DIR/$BRANCH_NAME"
+    if ! git worktree remove "$WORKTREE_DIR"/"$BRANCH_NAME"; then
+        error "Failed to remove git worktree: $WORKTREE_DIR/$BRANCH_NAME"
+        exit 1
+    fi
+    info "Git worktree: $WORKTREE_DIR/$BRANCH_NAME removed"
+    info "Removing git branch: $BRANCH_NAME"
+    git branch -D "$BRANCH_NAME"
+    if [[ -d $WORKTREE_DIR/$BRANCH_NAME ]]; then
+        info "Removing branch dir: $WORKTREE_DIR/$BRANCH_NAME"
+        rm -r "${WORKTREE_DIR/$BRANCH_NAME:?/}"
+        info "Branch dir: $WORKTREE_DIR/$BRANCH_NAME removed"
+    fi
+elif [[ $CMD == help ]]; then
+    if [ -n "$2" ]; then
+        INNER_CMD=$2
+        if [ "$INNER_CMD" == "add" ]; then
+            info "NAME"
+            info "       add - Create/assign a git worktree branch"
+            info "SYNOPSIS"
+            info "       gwt add [<branch>]"
+            info "DESCRIPTION"
+            info "       Creates a new git worktree under ~/worktree/<branch> folder or assigns it if branch already exists"
+        elif [ "$INNER_CMD" == "remove" ]; then
+            info "NAME"
+            info "       remove - Removes a git worktree branch"
+            info "SYNOPSIS"
+            info "       gwt remove [<branch>]"
+            info "DESCRIPTION"
+            info "       Remove the git worktree, directory and branch"
+        else
+            error "Invalid command: $INNER_CMD"
+        fi
+    else
+        info "Usage: gwt <cmd> [<args>]"
+        info ""
+        info "A utility tool for JFrog developers."
+        info "Helps create/assign/delete git branches using git worktree and jfdev working with multiple branches in parallel"
+        info ""
+        info "help      Displays this message"
+        info "add       Create/assign a git worktree branch"
+        info "remove    Remove the git worktree, directory and git branch"
+    fi
+else
+    error "Command parameter must be add/remove"
+fi

@@ -1,0 +1,33 @@
+name: Run setup_devenv CI on MacOS
+
+on:
+  push:
+    branches:
+      - main  # or specify any branch you want to trigger the action
+
+jobs:
+  run-ci_setup_devenv-on-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install expect
+        run: brew install expect
+
+      - name: Set execute permission on the CI Bash script
+        run: chmod +x ./setup_devenv/ci_setup_devenv.sh
+
+      - name: Set execute permission on the setup_devenv Bash script
+        run: chmod +x ./setup_devenv/setup_devenv.sh
+
+      - name: Run CI Bash Script
+        run: ./setup_devenv/ci_setup_devenv.sh
+
+      - name: Verify script execution
+        if: failure()
+        run: echo "Script failed with errors!" && exit 1
+
+      - name: Script Success
+        if: success()
+        run: echo "Script finished successfully!"

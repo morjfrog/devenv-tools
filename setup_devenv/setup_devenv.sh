@@ -68,14 +68,15 @@ else
     info "Homebrew already installed"
 fi
 
-# Install JDK17
-if ! java -version 2>&1 | grep -q "17"; then
-    info "Installing JDK 17"
+# Install JDK
+if ! java -version 2>&1 | grep -q "21"; then
+    info "Installing JDK"
     brew tap homebrew/cask-versions
-    brew install --cask temurin17
-    info "JDK17 installed"
+    brew install --cask temurin21
+    info "JDK installed"
 else
-    info "JDK 17 is already installed"
+    info "JDK is already installed:"
+    info "$(java -version)"
 fi
 
 # Install Rancher Desktop

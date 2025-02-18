@@ -6,8 +6,11 @@
 
 # shellcheck disable=SC2121
 set timeout 360
-spawn /Users/morm/setup_devenv.sh
-expect "*to continue or any other key to abort*" { send "\r" } # Homebrew install
-expect "Press Enter once the SSH public key is added to your BitBucket account to continue..." { send "\r" } # SSH public key bitbucket setup
-expect "*Are you sure you want to continue connecting*" { send "yes\r" } # Git clone
+spawn ./setup_devenv/setup_devenv.sh
+# Homebrew install
+expect "*to continue or any other key to abort*" { send "\r" }
+# SSH public key bitbucket setup
+expect "Press Enter once the SSH public key is added to your BitBucket account to continue..." { send "\r" }
+# Git clone
+expect "*Are you sure you want to continue connecting*" { send "yes\r" }
 expect eof

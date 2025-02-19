@@ -27,30 +27,30 @@ read_char() {
 
 set +xe # Enable debugging and exit on failure
 
-#if [[ -z $1 ]]; then
-#    while true; do
-#        info "Enter your CORP username (if you are not sure what it is, ask on #it_global_support):"
-#        read -r USERNAME
-#        if [ -n "$USERNAME" ]; then
-#            break
-#        fi
-#    done
-#fi
-#
-#if [[ -z $2 ]]; then
-#    while true; do
-#        info "Enter your Identity token.
-#        Get your identity token from repo21:
-#        1. Log in to repo21 using Okta - https://entplus.jfrog.io
-#        2. On the top right click on your username.
-#        3. Select: 'Edit Profile' and click 'Generate an Identity Token'
-#        4. Copy your token"
-#        read -r IDENTITY_TOKEN
-#        if [ -n "$IDENTITY_TOKEN" ]; then
-#            break
-#        fi
-#    done
-#fi
+if [[ -z $1 ]]; then
+    while true; do
+        info "Enter your CORP username (if you are not sure what it is, ask on #it_global_support):"
+        read -r USERNAME
+        if [ -n "$USERNAME" ]; then
+            break
+        fi
+    done
+fi
+
+if [[ -z $2 ]]; then
+    while true; do
+        info "Enter your Identity token.
+        Get your identity token from repo21:
+        1. Log in to repo21 using Okta - https://entplus.jfrog.io
+        2. On the top right click on your username.
+        3. Select: 'Edit Profile' and click 'Generate an Identity Token'
+        4. Copy your token"
+        read -r IDENTITY_TOKEN
+        if [ -n "$IDENTITY_TOKEN" ]; then
+            break
+        fi
+    done
+fi
 
 # install Homebrew
 if ! command -v brew &>/dev/null; then

@@ -22,6 +22,8 @@ jobs:
         run: chmod +x ./setup_devenv/setup_devenv.sh
 
       - name: Run CI Bash Script
+        env:
+          IDENTITY_TOKEN: ${{ secrets.IDENTITY_TOKEN }}
         run: ./setup_devenv/ci_setup_devenv.sh
 
       - name: Verify script execution

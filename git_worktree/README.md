@@ -26,5 +26,5 @@
    2. _Optional_: Sometimes `jfdev` doesn't make the needed changes, so we have to close Intellij, run `jfdev init` and re-open.
 3. Remove a branch from the worktree:
    1. `cd $ARTIFACTORY_DIR` 
-   2. `gwt remove <branch_name>`.
+   2. `gwt remove <branch_name>`
 4. Use `gwt help` and `gwt help <cmd>` for more information.

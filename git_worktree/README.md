@@ -1,4 +1,5 @@
-# Git Worktree - Manage multiple working trees attached to the same repository.
+# Git Worktree
+# Manage multiple working trees attached to the same repository.
 
 #### A git repository can support multiple working trees, allowing you to check out more than one branch at a time.
 #### Essentially it allows to work with different workspaces on different Intellij IDEA windows simultaneously, like cloning the repository multiple times but faster and without the storage impact.

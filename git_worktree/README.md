@@ -9,7 +9,7 @@
 
 ## GWT Script
 
-#### Introducing `gwt` script for git worktree. 
+#### Introducing `gwt` script for git worktree.
 #### Automates the process when adding/removing branches.
 
 ### Installation:
@@ -19,9 +19,12 @@
 
 ### To work with the script:
 1. Create a branch under the worktree:
-   a.  `cd $ARTIFACTORY_DIR`
-   b.  `gwt add <branch_name>`  (Example: `gwt add feature/RTDEV-12345`).
-2. Develop under the branch: Simply: `cd ~/worktree/<branch_name>`,  and start developing.
-   a. _Optional_: Sometimes  jfdev  doesn't make the needed changes, so we have to close Intellij, run jfdev init and re-open.
-3. Remove a branch from the worktree: `cd $ARTIFACTORY_DIR && gwt remove <branch_name>`.
+   1. `cd $ARTIFACTORY_DIR`
+   2. `gwt add <branch_name>`  (Example: `gwt add feature/RTDEV-12345`).
+2. Develop under the branch: 
+   1. Simply: `cd ~/worktree/<branch_name>`, open IntelliJ on this dir, and start developing.
+   2. _Optional_: Sometimes `jfdev` doesn't make the needed changes, so we have to close Intellij, run `jfdev init` and re-open.
+3. Remove a branch from the worktree:
+   1. `cd $ARTIFACTORY_DIR` 
+   2. `gwt remove <branch_name>`.
 4. Use `gwt help` and `gwt help <cmd>` for more information.

@@ -18,7 +18,9 @@
 2. _Optional_: Set your root artfiactory-service repo dir to `$ARTIFACTORY_DIR` on your global shell config (recommended).
 
 ### To work with the script:
-1. Create a branch under the worktree: `gwt add <branch_name>`  (Example: `gwt add feature/RTDEV-12345`).
+1. Create a branch under the worktree:
+   a.  `cd $ARTIFACTORY_DIR`
+   b.  `gwt add <branch_name>`  (Example: `gwt add feature/RTDEV-12345`).
 2. Develop under the branch: Simply: `cd ~/worktree/<branch_name>`,  and start developing.
    a. _Optional_: Sometimes  jfdev  doesn't make the needed changes, so we have to close Intellij, run jfdev init and re-open.
 3. Remove a branch from the worktree: `cd $ARTIFACTORY_DIR && gwt remove <branch_name>`.
